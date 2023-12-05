@@ -1,6 +1,6 @@
 
 var Qi = 0
-var QiPerClick = 1
+var QiPerClick = 100
 var QiPerClickCost = 10
 var ManualAmount = 0
 var ManualCost = 4
@@ -12,14 +12,14 @@ var RebirthStage = 1
 
 
 function cultivate() {
-    Qi += QiPerClick
+    Qi += QiPerClick*RebirthStage
     document.getElementById("qicultivated").innerHTML = Qi + " Qi"
 }
 
 function buyQiPerClick() {
     if (Qi >= QiPerClickCost) { 
         Qi -= QiPerClickCost
-        QiPerClick += 1
+        QiPerClick += (1*RebirthStage)
         QiPerClickCost *= 2
         document.getElementById("qicultivated").innerHTML = Qi + " Qi"
         document.getElementById("perClickUpgrade").innerHTML = "Strenghten soul realm (Level " + QiPerClick + ") Cost:" + QiPerClickCost + "Qi"
@@ -29,7 +29,7 @@ function buyQiPerClick() {
 function buyManual() {
     if (Qi >= ManualCost) {
         Qi -= ManualCost
-        ManualAmount += 1
+        ManualAmount += (1*RebirthStage)
         ManualCost *= 2
         document.getElementById("qicultivated").innerHTML = Qi + " Qi"
         document.getElementById("ManualUpgrade").innerHTML = "Buy cultivation manual (Level " + ManualAmount + ") Cost: " + ManualCost +" Qi"
@@ -40,7 +40,7 @@ function buyManual() {
 function Breakthrough() {
     if (Qi >= BreakthroughCost) {
         Qi -= BreakthroughCost
-        BreakthroughStage += 1
+        BreakthroughStage += (1*RebirthStage)
         BreakthroughCost *= 2
         document.getElementById("qicultivated").innerHTML = Qi + " Qi"
         document.getElementById("BreakthroughSystem").innerHTML = "Break through to realm" + BreakthroughStage + "Cost: " + BreakthroughCost + " Qi"
@@ -48,10 +48,21 @@ function Breakthrough() {
     }
 }
 
+function Rebirth() {
+    if (Qi >= RebirthCost) {
+        Qi -= RebirthCost;
+        RebirthStage += 1;
+        RebirthCost *=5;
+        document.getElementById("qicultivated").innerHTML = Qi + " Qi";
+        document.getElementById("RebirthSystem").innerHTML = "Rebirth" + "(level" + RebirthStage + ")" + "Cost: " + RebirthCost + " Qi";
+    }
+    
+}
+
 function PassiveQiGain() {
-    Qi += ((ManualAmount + QiPerClick)*BreakthroughStage)
+    Qi += (((ManualAmount + QiPerClick)*(BreakthroughStage*RebirthStage)));
     document.getElementById("qicultivated").innerHTML = Qi + " Qi"
-    document.getElementById("PassiveGain").innerHTML = ((ManualAmount + QiPerClick)*BreakthroughStage) + " Qi/s"
+    document.getElementById("PassiveGain").innerHTML = (((ManualAmount + QiPerClick)*(BreakthroughStage*RebirthStage))) + " Qi/s"
 }
 
 function Save() {
@@ -63,6 +74,8 @@ function Save() {
         ManualCost: ManualCost,
         BreakthroughStage: BreakthroughStage,
         BreakthroughCost: BreakthroughCost,
+        RebirthStage: RebirthStage,
+        RebirthCost: RebirthCost
     }
     localStorage.setItem("SupahcultivatorSave", JSON.stringify(gamesave))
 }
@@ -72,9 +85,7 @@ function resetData() {
     location.reload()
 }
 
-function Rebirth() {
-    
-}
+
 
 function ShowTooltip() {
     
@@ -98,6 +109,8 @@ function loadgame() {
     if (typeof savedgame.ManualCost!== "undefined") ManualCost = savedgame.ManualCost;
     if (typeof savedgame.BreakthroughStage!== "undefined") BreakthroughStage = savedgame.BreakthroughStage;
     if (typeof savedgame.BreakthroughCost!== "undefined") BreakthroughCost= savedgame.BreakthroughCost;
+    if (typeof savedgame.RebirthStage!== "undefined") RebirthStage = savedgame.RebirthStage;
+    if (typeof savedgame.RebirthCost!== "undefined") RebirthCost= savedgame.RebirthCost;
 }
 
 window.onload = function() {
@@ -107,4 +120,5 @@ window.onload = function() {
     document.getElementById("perClickUpgrade").innerHTML = "Strenghten soul realm (Level " + QiPerClick + ") Cost: " + QiPerClickCost + " Qi";
     document.getElementById("BreakthroughSystem").innerHTML = "Break through to next realm "+ "(Level " + BreakthroughStage + ")" + " Cost: " + BreakthroughCost + " Qi";
     document.getElementById("qicultivated").innerHTML = Qi + " Qi";
+    document.getElementById("RebirthSystem").innerHTML = "Rebirth" + "(level" + RebirthStage + ")" + "Cost: " + RebirthCost + " Qi";
 }
