@@ -1,6 +1,7 @@
 
 var Qi = 0
-var QiPerClick = 100
+var QiPerClick = 10
+var QiPerClickLevel = 1
 var QiPerClickCost = 10
 var ManualAmount = 0
 var ManualCost = 4
@@ -18,11 +19,12 @@ function cultivate() {
 
 function buyQiPerClick() {
     if (Qi >= QiPerClickCost) { 
-        Qi -= QiPerClickCost
-        QiPerClick += (1*RebirthStage)
-        QiPerClickCost *= 2
-        document.getElementById("qicultivated").innerHTML = Qi + " Qi"
-        document.getElementById("perClickUpgrade").innerHTML = "Strenghten soul realm (Level " + QiPerClick + ") Cost:" + QiPerClickCost + "Qi"
+        Qi -= QiPerClickCost;
+        QiPerClick += (10*RebirthStage);
+        QiPerClickCost = Math.round(QiPerClickCost*1.5); 
+        QiPerClickLevel += 1;
+        document.getElementById("qicultivated").innerHTML = Qi + " Qi";
+        document.getElementById("perClickUpgrade").innerHTML = "Strenghten soul realm (Level " + (QiPerClickLevel) + ") Cost: " + QiPerClickCost + " Qi";
     }   
 }
 
@@ -52,11 +54,22 @@ function Rebirth() {
     if (Qi >= RebirthCost) {
         Qi -= RebirthCost;
         RebirthStage += 1;
-        RebirthCost *=5;
+        RebirthCost *=2.5;
+        Qi = 0
+        QiPerClick = 100
+        QiPerClickCost = 10
+        QiPerClickLevel = 1
+        ManualAmount = 0
+        ManualCost = 4
+        BreakthroughStage = 1
+        BreakthroughCost = 1000 
         document.getElementById("qicultivated").innerHTML = Qi + " Qi";
         document.getElementById("RebirthSystem").innerHTML = "Rebirth" + "(level" + RebirthStage + ")" + "Cost: " + RebirthCost + " Qi";
-    }
-    
+        document.getElementById("ManualUpgrade").innerHTML = "Buy cultivation manual (Level " + ManualAmount + ") Cost: " + ManualCost +" Qi";
+        document.getElementById("PassiveGain").innerHTML = (ManualAmount + QiPerClick) + " Qi/s";
+        document.getElementById("perClickUpgrade").innerHTML = "Strenghten soul realm (Level " + QiPerClick + ") Cost: " + QiPerClickCost + " Qi";
+        document.getElementById("BreakthroughSystem").innerHTML = "Break through to next realm "+ "(Level " + BreakthroughStage + ")" + " Cost: " + BreakthroughCost + " Qi";
+     }   
 }
 
 function PassiveQiGain() {
@@ -70,6 +83,7 @@ function Save() {
         Qi: Qi,
         QiPerClick: QiPerClick,
         QiPerClickCost: QiPerClickCost,
+        QiPerClickLevel: QiPerClickLevel,
         ManualAmount: ManualAmount,
         ManualCost: ManualCost,
         BreakthroughStage: BreakthroughStage,
@@ -111,13 +125,14 @@ function loadgame() {
     if (typeof savedgame.BreakthroughCost!== "undefined") BreakthroughCost= savedgame.BreakthroughCost;
     if (typeof savedgame.RebirthStage!== "undefined") RebirthStage = savedgame.RebirthStage;
     if (typeof savedgame.RebirthCost!== "undefined") RebirthCost= savedgame.RebirthCost;
+    if (typeof savedgame.QiPerClickLevel!== "undefined") QiPerClickLevel= savedgame.QiPerClickLevel;
 }
 
 window.onload = function() {
     loadgame();
     document.getElementById("ManualUpgrade").innerHTML = "Buy cultivation manual (Level " + ManualAmount + ") Cost: " + ManualCost +" Qi";
     document.getElementById("PassiveGain").innerHTML = (ManualAmount + QiPerClick) + " Qi/s";
-    document.getElementById("perClickUpgrade").innerHTML = "Strenghten soul realm (Level " + QiPerClick + ") Cost: " + QiPerClickCost + " Qi";
+    document.getElementById("perClickUpgrade").innerHTML = "Strenghten soul realm (Level " + QiPerClickLevel + ") Cost: " + QiPerClickCost + " Qi";
     document.getElementById("BreakthroughSystem").innerHTML = "Break through to next realm "+ "(Level " + BreakthroughStage + ")" + " Cost: " + BreakthroughCost + " Qi";
     document.getElementById("qicultivated").innerHTML = Qi + " Qi";
     document.getElementById("RebirthSystem").innerHTML = "Rebirth" + "(level" + RebirthStage + ")" + "Cost: " + RebirthCost + " Qi";
